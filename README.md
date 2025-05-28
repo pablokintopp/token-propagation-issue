@@ -6,6 +6,28 @@ receive responses from the chatbot via a WebSocket Reactive endpoint.
 
 ## Project Overview
 
+### Project Structure
+```
+token-propagation-issue/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── eurodyn/poc/
+│   │   │       ├── ChatbotAgentService.java         # Defines chatbot behavior using Langchain4j
+│   │   │       ├── DemoTools.java                   # Provides tools for chatbot interactions
+│   │   │       ├── Resource.java                    # REST resource with role-protected endpoint
+│   │   │       ├── ResourceClient.java              # REST client interface with OIDC token propagation
+│   │   │       ├── WebSocketNonReactiveEndpoint.java    # WebSocket endpoint for non-reactive communication
+│   │   │       ├── WebSocketReactiveUniEndpoint.java    # WebSocket endpoint using Uni for reactive communication
+│   │   │       └── WebSocketReactiveMultiEndpoint.java  # WebSocket endpoint using Multi for streaming responses
+│   │   └── resources/
+│   │       ├── application.properties               # Quarkus configuration file (includes Dev Services settings)
+│   │       └── keycloak-realm.json                  # Keycloak realm with users, roles, and client config
+│
+├── pom.xml                                          # Maven project descriptor with Quarkus dependencies and plugins
+```
+
+### WebSocket examples
 The project includes three WebSocket examples:
 
 1. **WebSocket Non-Reactive** (Working) - `/websocket-non-reactive/to/rest`
