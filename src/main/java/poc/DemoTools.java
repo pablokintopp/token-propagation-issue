@@ -1,4 +1,4 @@
-package eurodyn.poc;
+package poc;
 
 import dev.langchain4j.agent.tool.Tool;
 import io.quarkus.security.identity.SecurityIdentity;
@@ -21,8 +21,8 @@ public class DemoTools {
     SecurityIdentity identity;
 
 
-    @Tool("find the value in the Rest endpoint")
-    public Long findValue(String system) {
+    @Tool("find the user id")
+    public Long findUserId(String system) {
         try {
             LOG.infof("Request to findValue from user '%s' with roles '%s'",
                     identity.getPrincipal(),

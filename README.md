@@ -12,7 +12,7 @@ token-propagation-issue/
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   └── eurodyn/poc/
+│   │   │   └── poc/
 │   │   │       ├── ChatbotAgentService.java         # Defines chatbot behavior using Langchain4j
 │   │   │       ├── DemoTools.java                   # Provides tools for chatbot interactions
 │   │   │       ├── Resource.java                    # REST resource with role-protected endpoint
@@ -55,6 +55,7 @@ endpoint. This prevents the proper propagation of the token and results in a fai
    ```shell
    ./mvnw quarkus:dev
    ```
+
 ## WebSocket Examples
 
 ### WebSocket Testing Tool
@@ -77,14 +78,11 @@ ACCESS_TOKEN=$(curl -s -X POST "http://localhost:8180/realms/poc-realm/protocol/
 websocat ws://localhost:8081//websocket-non-reactive/to/rest -H "Authorization: Bearer $ACCESS_TOKEN"
 ```
 
-Expected Output:
+**Interaction example and output** :
 ```
 Connection opened in WebSocketNonReactiveEndpoint_Subclass
-hello
-Would you like to find the value in the Rest endpoint?
-yes
-The value found in the Rest endpoint is 5.
-
+What is my user id?
+Your user id is 5.
 ```
 
 ### WebSocket Reactive with Uni (Working)
@@ -102,13 +100,11 @@ ACCESS_TOKEN=$(curl -s -X POST "http://localhost:8180/realms/poc-realm/protocol/
 websocat ws://localhost:8081//websocket-reactive-uni/to/rest -H "Authorization: Bearer $ACCESS_TOKEN"
 ```
 
-Expected Output:
+**Interaction example and output** :
 ```
 Connection opened in WebSocketReactiveUniEndpoint_Subclass
-hello
-Would you like to find the value in the Rest endpoint?
-yes
-The value found in the Rest endpoint is 5.
+What is my user id?
+Your user id is 5.
 ```
 
 ### WebSocket Reactive with Multi (Not Working)
@@ -127,33 +123,58 @@ ACCESS_TOKEN=$(curl -s -X POST "http://localhost:8180/realms/poc-realm/protocol/
 websocat ws://localhost:8081//websocket-reactive-multi/to/rest -H "Authorization: Bearer $ACCESS_TOKEN"
 ```
 
-Expected Output:
+**Interaction output** :
 ```
 Connection opened in WebSocketReactiveMultiEndpoint_Subclass
-hello
-Would
- you
- like
- to
- find
+What is my user id?
+I
+'m
+ sorry
+,
+ but
  the
- value
- in
- the
- Rest
- endpoint
-?
-yes
-The
- value
- found
- in
- the
- Rest
- endpoint
- is
- null
+ user
+ ID
+ could
+ not
+ be
+ retrieved
+ at
+ this
+ time
 .
+
+```
+**Logs during interaction** :
+```
+INFO  [poc.DemoTools] (vert.x-worker-thread-1) Request to findValue from user 'io.quarkus.security.runtime.AnonymousIdentityProvider$1@57ad230f' with roles '[]'
+org.jboss.resteasy.reactive.ClientWebApplicationException: Received: 'Unauthorized, status code 401' when invoking REST Client method: 'poc.ResourceClient#findValue'
+        at org.jboss.resteasy.reactive.client.impl.RestClientRequestContext.unwrapException(RestClientRequestContext.java:205)
+        at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.handleException(AbstractResteasyReactiveContext.java:329)
+        at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:175)
+        at io.smallrye.context.impl.wrappers.SlowContextualRunnable.run(SlowContextualRunnable.java:19)
+        at org.jboss.resteasy.reactive.client.handlers.ClientSwitchToRequestContextRestHandler$1$1.handle(ClientSwitchToRequestContextRestHandler.java:38)
+        at org.jboss.resteasy.reactive.client.handlers.ClientSwitchToRequestContextRestHandler$1$1.handle(ClientSwitchToRequestContextRestHandler.java:35)
+        at io.vertx.core.impl.ContextInternal.dispatch(ContextInternal.java:270)
+        at io.vertx.core.impl.ContextInternal.dispatch(ContextInternal.java:252)
+        at io.vertx.core.impl.ContextInternal.lambda$runOnContext$0(ContextInternal.java:50)
+        at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+        at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+        at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:472)
+        at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
+        at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:998)
+        at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+        at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+        at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: jakarta.ws.rs.WebApplicationException: Unauthorized, status code 401
+        at io.quarkus.rest.client.reactive.runtime.DefaultMicroprofileRestClientExceptionMapper.toThrowable(DefaultMicroprofileRestClientExceptionMapper.java:19)
+        at io.quarkus.rest.client.reactive.runtime.MicroProfileRestClientResponseFilter.filter(MicroProfileRestClientResponseFilter.java:54)
+        at org.jboss.resteasy.reactive.client.handlers.ClientResponseFilterRestHandler.handle(ClientResponseFilterRestHandler.java:21)
+        at org.jboss.resteasy.reactive.client.handlers.ClientResponseFilterRestHandler.handle(ClientResponseFilterRestHandler.java:10)
+        at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.invokeHandler(AbstractResteasyReactiveContext.java:231)
+        at org.jboss.resteasy.reactive.common.core.AbstractResteasyReactiveContext.run(AbstractResteasyReactiveContext.java:147)
+        ... 14 more
+io.vertx.core.http.HttpClosedException: Connection was closed
 
 ```
 
@@ -169,3 +190,4 @@ The application properties are defined in `src/main/resources/application.proper
 - HTTP port: `8081`
 - Keycloak dev services port: 8180
 - OpenAI API key: `QUARKUS_LANGCHAIN4J_OPENAI_API_KEY`
+

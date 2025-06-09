@@ -1,4 +1,4 @@
-package eurodyn.poc;
+package poc;
 
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;

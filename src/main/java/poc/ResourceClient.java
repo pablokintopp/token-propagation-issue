@@ -1,4 +1,4 @@
-package eurodyn.poc;
+package poc;
 
 import io.quarkus.oidc.token.propagation.common.AccessToken;
 import jakarta.ws.rs.GET;
