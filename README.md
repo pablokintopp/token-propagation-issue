@@ -41,8 +41,7 @@ endpoint. This prevents the proper propagation of the token and results in a fai
 
 - Java 21
 - Maven
-- Quarkus 3.23.0
-- Keycloak (configured with the provided `keycloak-realm.json`)
+- Open API key
 
 ## Running the Application in Dev Mode
 
